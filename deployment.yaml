@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wasmtime
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  replicas: 1
+  minReadySeconds: 4
+  selector:
+    matchLabels:
+      app: wasmtime
+  template:
+    metadata:
+      name: www
+      labels:
+        app: wasmtime
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: perl2 
+     # runtimeClassName: wasmtime
+      terminationGracePeriodSeconds: 2
+      containers:
+      - name: image1
+        image: erkules/mywasm:v1

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wasmtimerunc
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  replicas: 1
+  minReadySeconds: 4
+  selector:
+    matchLabels:
+      app: wasmtimerunc
+  template:
+    metadata:
+      name: www
+      labels:
+        app: wasmtimerunc
+      annotations:
+       #module.wasm.image/variant: compat-smart # Webassembly without OS
+       module.wasm.image/variant: compat
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: perl4 
+      runtimeClassName: wasmtime
+      terminationGracePeriodSeconds: 2
+      containers:
+      - name: image1
+        image: erkules/mywasm:sleep
